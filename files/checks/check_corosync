@@ -1,0 +1,11 @@
+#!/bin/bash
+
+EC=$(sudo /usr/sbin/corosync-cfgtool -s | grep "ring 0 active with no faults" | wc -l)
+
+if [ $EC -ne 1 ]; then
+        echo "CRITICAL: Check Corosync state! Ring 0 is failed!"
+        exit 2
+else
+        echo "OK: Corosync state is OK!"
+        exit 0
+fi

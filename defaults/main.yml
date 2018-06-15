@@ -1,0 +1,8 @@
+---
+nagios_plugins_directory: /home/nrpe/bin/
+nagios_server: 172.29.70.2
+nagios_user: nrpe
+nagios_group: nrpe
+nrpe_port: 5666
+nrpe_pid_file: /var/run/nagios/nrpe.pid
+nrpe_server_address: "{{ ansible_default_ipv4.address }}"

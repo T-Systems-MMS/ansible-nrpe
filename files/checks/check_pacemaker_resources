@@ -1,0 +1,100 @@
+#!/bin/bash
+
+RSCTYPE=$1
+RSCNAME=$2
+PATH=$PATH:/usr/sbin
+#export HOME=$(getent passwd $(whoami) |cut -d: -f6)
+export HOME=/var/tmp
+
+EXIT=3
+STATE="UNKNOWN"
+
+help() {
+        echo -e "Usage: $0 RSCTYPE RSCNAME
+\t\t RSCTYPE = primitive, clone, master, slave
+\t\t RSCNAME = name of the resource"
+}
+
+if [ "$RSCTYPE" = "" -o "$RSCNAME" = "" ]
+then
+        help
+        exit $EXIT
+fi
+
+RSCINFO=$(sudo crm resource status ${RSCNAME} | grep ${HOSTNAME} | cut -d' ' -f4)
+FAILS=$(sudo crm resource failcount ${RSCNAME} show ${HOSTNAME}| cut -d'=' -f4)
+
+if [ "${RSCINFO}" = "" ]
+then
+        STATE="CRITICAL"
+        EXIT=2
+        echo "${STATE} - no resource ${RSCNAME} found on ${HOSTNAME}"
+        exit $EXIT
+fi
+
+check_primitive() {
+        if [ ${RSCINFO} = "running" ]
+        then
+                STATE="OK"
+                EXIT=0
+                if [ ${FAILS} -gt 1 ] ;then
+                        STATE="WARNING"
+                        EXIT=1
+                fi
+        else
+                STATE="CRITICAL"
+                EXIT=2
+        fi
+        echo "${STATE} - resource ${RSCNAME} on ${HOSTNAME} in state ${RSCINFO} (Fails: ${FAILS})"
+}
+
+check_ms_master() {
+        RSCSTATE=$1
+        HOSTNAME=`hostname`
+        if [ $(sudo crm resource show | grep -A 2 ${RSCNAME} | grep -e "${RSCSTATE}s:.*${HOSTNAME}" | wc -l) -eq 1 ]
+        then
+                STATE="OK"
+                EXIT=0
+                echo "${STATE} - resource ${RSCNAME} on ${HOSTNAME} is in state $RSCSTATE (Fails: ${FAILS})"
+        else
+                STATE="CRITICAL"
+                EXIT=2
+                echo "${STATE} - resource ${RSCNAME} on ${HOSTNAME} ISNOT in state $RSCSTATE (Fails: ${FAILS})"
+        fi
+}
+
+check_ms_slave() {
+        RSCSTATE=$1
+        HOSTNAME=$(sudo crm resource show | grep -A 2 ${RSCNAME} | grep "${RSCSTATE}s:" | grep -v "${HOSTNAME}" | awk -F ' ' '{print $3}')
+        if [ $(sudo crm resource show | grep -A 2 ${RSCNAME} | grep "${RSCSTATE}s:" | grep "${HOSTNAME}" | wc -l) -eq 1 ]
+        then
+                STATE="OK"
+                EXIT=0
+                echo "${STATE} - resource ${RSCNAME} on ${HOSTNAME} is in state $RSCSTATE (Fails: ${FAILS})"
+        else
+                STATE="WARNING"
+                EXIT=1
+                echo "${STATE} - resource ${RSCNAME} on ${HOSTNAME} ISNOT in state $RSCSTATE (Fails: ${FAILS})"
+        fi
+}
+
+case $RSCTYPE in
+        clone)
+                check_primitive
+                ;;
+        primitive)
+                check_primitive
+                ;;
+        master)
+                check_ms_master Master
+                ;;
+        slave)
+                check_ms_slave Slave
+                ;;
+        *)
+                help
+                ;;
+esac
+
+exit $EXIT
+
