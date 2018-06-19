@@ -6,33 +6,56 @@ Ansible role to install and configure NRPE
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- git if you want to checkout additional NRPE-checks from a custom repository
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| variable | default value | description |
+|---|---|---|
+| nrpe_user              | `nrpe`                                 | Effective user that the NRPE daemon should run as. |
+| nrpe_group             | `nrpe`                                 | Effective group that the NRPE daemon should run as. |
+| nrpe_port              | `5666`                                 | Port number NRPE should wait for connections on. |
+| nrpe_pid_file          | `/var/run/nagios/nrpe.pid`             | Name of the file in which the NRPE daemon should write it's process ID number. |
+| nrpe_server_address    | `"{{ ansible_default_ipv4.address }}"` | Address that NRPE should bind to. |
+| nrpe_additional_groups | ``                                     | List of additional groups the NRPE user should belong to. |
+| nrpe_checks_repository | ``                                     | URL of git-repository that contains additional NRPE-checks to be checked out. |
+| nrpe_plugins_directory | `/home/nrpe/bin/`                      | Path where to copy the NRPE checks from the git-repository to. |
+| nrpe_allowed_hosts     | `127.0.0.1,172.29.70.2`                | List of IP address or hostnames that are allowed to talk to the NRPE daemon. |
+
 
 Dependencies
 ------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- none
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Install and configure NRPE with the default configuration:
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: nrpe }
+
+
+Install and configure NRPE with the additional settings configuration:
+
+    - hosts: servers
+      vars:
+				nrpe_server_address: 127.0.0.1
+        nrpe_checks_repository: "https://git.example.com/nrpe_checks.git"
+        nrpe_additional_groups:
+          - apache
+      roles:
+         - { role: nrpe }
+
 
 License
 -------
 
-BSD
+GPLv3
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Sebastian Gumprich

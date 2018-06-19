@@ -1,4 +1,0 @@
-/subsystem=web/connector=http:read-attribute(name=requestCount)
-/subsystem=web/connector=http:read-attribute(name=errorCount)
-/subsystem=web/connector=http:read-attribute(name=bytesReceived)
-/subsystem=web/connector=http:read-attribute(name=bytesSent)

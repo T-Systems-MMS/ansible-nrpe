@@ -3,3 +3,13 @@
   remote_user: root
   roles:
     - .
+
+- hosts: localhost
+  remote_user: root
+  vars:
+    nrpe_server_address: 127.0.0.1
+    nrpe_checks_repository: "https://git.example.com/nrpe_checks.git"
+    nrpe_additional_groups:
+      - apache
+  roles:
+    - .

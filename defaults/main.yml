@@ -1,8 +1,17 @@
 ---
-nagios_plugins_directory: /home/nrpe/bin/
-nagios_server: 172.29.70.2
-nagios_user: nrpe
-nagios_group: nrpe
+nrpe_plugins_directory: /home/nrpe/bin/
+nrpe_user: nrpe
+nrpe_group: nrpe
 nrpe_port: 5666
 nrpe_pid_file: /var/run/nagios/nrpe.pid
 nrpe_server_address: "{{ ansible_default_ipv4.address }}"
+nrpe_allowed_hosts:
+  - 127.0.0.1
+  - 172.29.70.2
+
+# list of groups nrpe should belong to
+#nrpe_additional_groups:
+#  -
+
+# url of repository containing nrpe checks to download
+#nrpe_checks_repository: https://git.example.com/nrpe_checks.git

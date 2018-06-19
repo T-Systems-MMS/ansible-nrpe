@@ -4,7 +4,7 @@
     name: "nrpe"
     state: present
 
-- name: enable nrpe autostart
+- name: start nrpe and enable autostart
   service:
     name: nrpe
     enabled: yes
@@ -18,62 +18,61 @@
 
 - name: create nrpe-user
   user:
-    name: nrpe
+    name: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
     shell: /sbin/nologin
-    group: nrpe
   tags:
     - init
     - user
 
-- name: check if group exists
+- name: get all existing groups from the system
   shell: "cut -d: -f1 /etc/group"
   changed_when: false
   check_mode: no
   register: existing_groups
 
-- name: create nrpe-user
+- name: add nrpe user to additional groups
   user:
-    name: nrpe
+    name: "{{ nrpe_user }}"
     groups: "{{ item }}"
     append: yes
   with_items:
-    - "{{nrpe_additional_groups}}"
+    - "{{ nrpe_additional_groups }}"
   when: item in existing_groups.stdout_lines
 
-- name: make sure that libexec-dir and nrpe.d is created
+- name: make sure that directories are created
   file:
     path: "{{ item }}"
     state: directory
-    owner: nrpe
-    group: nrpe
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
     mode: 0750
   with_items:
     - "/var/run/nagios/"
-    - "/home/nrpe/"
-    - "{{ nagios_plugins_directory }}"
+    - "/home/{{ nrpe_user }}/"
     - "/etc/nagios/nrpe.d/"
+    - "{{ nrpe_plugins_directory }}"
 
 - name: copy over non-packaged checks
-  copy:
-    src: ../files/checks/
-    dest: "{{ nagios_plugins_directory }}"
-    owner: "nrpe"
-    group: "nrpe"
+  git:
+    repo: "{{ nrpe_checks_repository }}"
+    dest: "{{ nrpe_plugins_directory }}"
+  when: nrpe_repository is defined
 
 - name: copy over base NRPE checks config file
   copy:
-    src: groups/
-    dest: /etc/nagios/nrpe.d/
-    owner: nrpe
-    group: nrpe
-    mode: 0750 
+    src: "configs/"
+    dest: "/etc/nagios/nrpe.d/"
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
+    mode: 0750
   notify: restart nrpe
 
-- name: copy over standard nrpe config
+- name: create standard nrpe configuration
   template:
-    src: nrpe.cfg
-    dest: /etc/nagios/nrpe.cfg
-    owner: nrpe
-    group: nrpe
-    mode: 0750 
+    src: "nrpe.cfg"
+    dest: "/etc/nagios/nrpe.cfg"
+    owner: "{{ nrpe_user }}"
+    group: "{{ nrpe_group }}"
+    mode: 0750
   notify: restart nrpe
