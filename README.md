@@ -42,7 +42,7 @@ Install and configure NRPE with the additional settings configuration:
 
     - hosts: servers
       vars:
-				nrpe_server_address: 127.0.0.1
+        nrpe_server_address: 127.0.0.1
         nrpe_checks_repository: "https://git.example.com/nrpe_checks.git"
         nrpe_additional_groups:
           - apache
