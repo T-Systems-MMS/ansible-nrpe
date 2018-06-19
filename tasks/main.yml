@@ -50,19 +50,20 @@
   with_items:
     - "/var/run/nagios/"
     - "/home/{{ nrpe_user }}/"
-    - "/etc/nagios/nrpe.d/"
+    - "/etc/nagios/"
+    - "/etc/nrpe.d/"
     - "{{ nrpe_plugins_directory }}"
 
 - name: copy over non-packaged checks
   git:
     repo: "{{ nrpe_checks_repository }}"
     dest: "{{ nrpe_plugins_directory }}"
-  when: nrpe_repository is defined
+  when: nrpe_checks_repository is defined
 
 - name: copy over base NRPE checks config file
-  copy:
-    src: "configs/"
-    dest: "/etc/nagios/nrpe.d/"
+  template:
+    src: "nrpe-checks.cfg"
+    dest: "/etc/nrpe.d/nrpe-checks.cfg"
     owner: "{{ nrpe_user }}"
     group: "{{ nrpe_group }}"
     mode: 0750
