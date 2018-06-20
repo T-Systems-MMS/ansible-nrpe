@@ -15,3 +15,6 @@ nrpe_allowed_hosts:
 
 # url of repository containing nrpe checks to download
 #nrpe_checks_repository: https://git.example.com/nrpe_checks.git
+
+# list of nrpe checks
+#nrpe_check_list:

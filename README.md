@@ -22,6 +22,7 @@ Role Variables
 | nrpe_checks_repository | ``                                     | URL of git-repository that contains additional NRPE-checks to be checked out. |
 | nrpe_plugins_directory | `/home/nrpe/bin/`                      | Path where to copy the NRPE checks from the git-repository to. |
 | nrpe_allowed_hosts     | `127.0.0.1,172.29.70.2`                | List of IP address or hostnames that are allowed to talk to the NRPE daemon. |
+| nrpe_check_list        | ``                                     | List of NRPE checks to insert into the configuration. |
 
 
 Dependencies

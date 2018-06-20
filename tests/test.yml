@@ -11,5 +11,8 @@
     nrpe_checks_repository: "https://git.example.com/nrpe_checks.git"
     nrpe_additional_groups:
       - apache
+    nrpe_check_list:
+      - check1
+      - check2
   roles:
     - .
