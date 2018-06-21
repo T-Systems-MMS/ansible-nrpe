@@ -77,6 +77,7 @@
     owner: "{{ nrpe_user }}"
     group: "{{ nrpe_group }}"
     mode: 0750
+  when: nrpe_check_list is defined
   notify: restart nrpe
 
 - name: create standard nrpe configuration
