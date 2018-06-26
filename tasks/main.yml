@@ -37,7 +37,7 @@
     groups: "{{ item }}"
     append: yes
   with_items:
-    - "{{ nrpe_additional_groups }}"
+    - "{{ nrpe_additional_groups | default([]) }}"
   when: item in existing_groups.stdout_lines
 
 - name: make sure that directories are created
