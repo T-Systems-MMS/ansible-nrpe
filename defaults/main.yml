@@ -4,7 +4,7 @@ nrpe_allowed_hosts:
   - 172.29.70.2
 nrpe_group: "nrpe"
 nrpe_include_directory: "/etc/nrpe.d/"
-nrpe_pid_file: "/var/run/nagios/nrpe.pid"
+nrpe_pid_file: "/var/run/nrpe/nrpe.pid"
 nrpe_plugins_directory: "/home/nrpe/bin/"
 nrpe_port: 5666
 nrpe_server_address: "{{ ansible_default_ipv4.address }}"

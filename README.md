@@ -19,7 +19,7 @@ Role Variables
 | nrpe_checks_repository | ``                                     | URL of git-repository that contains additional NRPE-checks to be checked out. |
 | nrpe_group             | `nrpe`                                 | Effective group that the NRPE daemon should run as. |
 | nrpe_include_directory | `/etc/nrpe.d/`                         | Directive to include definitions from config files. |
-| nrpe_pid_file          | `/var/run/nagios/nrpe.pid`             | Name of the file in which the NRPE daemon should write it's process ID number. |
+| nrpe_pid_file          | `/var/run/nrpe/nrpe.pid`               | Name of the file in which the NRPE daemon should write it's process ID number. |
 | nrpe_plugins_directory | `/home/nrpe/bin/`                      | Path where to copy the NRPE checks from the git-repository to. |
 | nrpe_port              | `5666`                                 | Port number NRPE should wait for connections on. |
 | nrpe_server_address    | `"{{ ansible_default_ipv4.address }}"` | Address that NRPE should bind to. |
