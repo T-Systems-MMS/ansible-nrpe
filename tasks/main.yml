@@ -60,15 +60,8 @@
     dest: "{{ nrpe_plugins_directory }}"
     force: true
   when: nrpe_checks_repository is defined
-
-- name: change permissions of downloaded checks
-  file:
-    path: "{{ nrpe_plugins_directory }}"
-    owner: "{{ nrpe_user }}"
-    group: "{{ nrpe_group }}"
-    mode: 0750
-    recurse: true
-  when: nrpe_checks_repository is defined
+  become_user: "{{ nrpe_user }}"
+  become: true
 
 - name: copy over base NRPE checks config file
   template:
