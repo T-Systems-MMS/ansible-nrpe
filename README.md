@@ -14,7 +14,7 @@ Role Variables
 | variable | default value | description |
 |---|---|---|
 | nrpe_additional_groups | ``                                     | List of additional groups the NRPE user should belong to. |
-| nrpe_allowed_hosts     | `127.0.0.1,172.29.70.2`                | List of IP addresses or hostnames that are allowed to talk to the NRPE daemon. |
+| nrpe_allowed_hosts     | `- '127.0.0.1'`<br>`- '172.29.70.2'`                | List of IP addresses or hostnames that are allowed to talk to the NRPE daemon. |
 | nrpe_check_list        | ``                                     | List of NRPE checks to insert into the configuration. |
 | nrpe_checks_repository | ``                                     | URL of git-repository that contains additional NRPE-checks to be checked out. |
 | nrpe_group             | `nrpe`                                 | Effective group that the NRPE daemon should run as. |
